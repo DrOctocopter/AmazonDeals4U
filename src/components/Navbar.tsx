@@ -7,7 +7,17 @@ import { cn } from '../lib/utils';
 export const Navbar: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+      setIsSearchOpen(false);
+      setSearchQuery('');
+    }
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full bg-white border-b border-gray-100 shadow-sm">
@@ -73,15 +83,17 @@ export const Navbar: React.FC = () => {
       {/* Search Overlay */}
       {isSearchOpen && (
         <div className="absolute top-full left-0 w-full bg-white border-b border-gray-200 p-4 animate-in slide-in-from-top duration-200">
-          <div className="max-w-3xl mx-auto relative">
+          <form onSubmit={handleSearch} className="max-w-3xl mx-auto relative">
             <input 
               type="text" 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search for deals (e.g. 'Air Fryer', 'PS5')..."
               className="w-full bg-gray-100 border-none rounded-xl py-3 pl-12 pr-4 focus:ring-2 focus:ring-orange-500 font-medium"
               autoFocus
             />
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
-          </div>
+          </form>
         </div>
       )}
 
